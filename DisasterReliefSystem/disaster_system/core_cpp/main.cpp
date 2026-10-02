@@ -1,6 +1,6 @@
 //this main file is for testing purpose
 #include "priority_calculator.h"
-
+#include "sorting_searching.h"
 #include <iostream>
 #include <vector>
 
@@ -94,6 +94,60 @@ int main()
 
     // Display results
     displayPriorities(areas);
+
+    // DAY 3: PRIORITY QUEUE
+    PriorityQueueManager priorityManager;
+
+    // Insert all disaster areas into priority queue.
+    for (const DisasterArea& area : areas)
+    {
+        priorityManager.addArea(area);
+    }
+
+    // Display processing order.
+    priorityManager.displayProcessingOrder();
+
+    // DAY 3: SEARCHING
+    string searchName;
+
+    cout << "\nEnter area name to search: ";
+    cin >> searchName;
+
+    int searchIndex = searchAreaByName(areas, searchName);
+
+    if (searchIndex != -1)
+    {
+        cout << "\nSEARCH RESULT :\n";
+
+        cout << "Area Name: "
+             << areas[searchIndex].areaName
+             << endl;
+
+        cout << "Priority Score: "
+             << areas[searchIndex].priorityScore
+             << endl;
+
+        cout << "Priority Level: "
+             << areas[searchIndex].priorityLevel
+             << endl;
+
+        cout << "Waiting Time: "
+             << areas[searchIndex].waitingTime
+             << " hours"
+             << endl;
+
+    }
+    else
+    {
+        cout << "\nArea not found." << endl;
+    }
+
+
+    // DAY 3: SORTING
+    sortAreasByPriority(areas);
+
+    displaySortedReport(areas);
+
 
     return 0;
 }
