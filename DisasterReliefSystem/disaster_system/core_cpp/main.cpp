@@ -1,6 +1,7 @@
 //this main file is for testing purpose
 #include "priority_calculator.h"
 #include "sorting_searching.h"
+#include "resource_allocator.h"
 #include <iostream>
 #include <vector>
 
@@ -22,6 +23,7 @@ int main()
 
     vector<DisasterArea> areas;
 
+    // Input Disaster Aera Data
     for (int i = 0; i < numberOfAreas; i++)
     {
         DisasterArea area;
@@ -95,7 +97,7 @@ int main()
     // Display results
     displayPriorities(areas);
 
-    // DAY 3: PRIORITY QUEUE
+    // PRIORITY QUEUE
     PriorityQueueManager priorityManager;
 
     // Insert all disaster areas into priority queue.
@@ -107,7 +109,7 @@ int main()
     // Display processing order.
     priorityManager.displayProcessingOrder();
 
-    // DAY 3: SEARCHING
+    // SEARCHING
     string searchName;
 
     cout << "\nEnter area name to search: ";
@@ -143,11 +145,137 @@ int main()
     }
 
 
-    // DAY 3: SORTING
+    // SORTING
     sortAreasByPriority(areas);
 
     displaySortedReport(areas);
 
+    // AVAILABLE RESOURCES
+    AvailableResources available;
+
+    cout << "\nAVAILABLE RESOURCES :\n";
+
+    cout << "Food: ";
+    cin >> available.food;
+
+    if (available.food < 0)
+    {
+        cout << "Food cannot be negative." << endl;
+        return 1;
+    }
+
+
+    cout << "Water: ";
+    cin >> available.water;
+
+    if (available.water < 0)
+    {
+        cout << "Water cannot be negative." << endl;
+        return 1;
+    }
+
+
+    cout << "Medicine: ";
+    cin >> available.medicine;
+
+    if (available.medicine < 0)
+    {
+        cout << "Medicine cannot be negative." << endl;
+        return 1;
+    }
+
+
+    cout << "Blankets: ";
+    cin >> available.blankets;
+
+    if (available.blankets < 0)
+    {
+        cout << "Blankets cannot be negative." << endl;
+        return 1;
+    }
+
+
+    // RESOURCE REQUIREMENTS
+    vector<ResourceRequest> requests;
+
+    for (const DisasterArea& area : areas)
+    {
+        ResourceRequest request;
+
+        request.areaName = area.areaName;
+        request.priorityScore = area.priorityScore;
+        request.waitingTime = area.waitingTime;
+        request.priorityLevel = area.priorityLevel;
+
+
+        cout << "\nRESOURCE DEMAND :\n";
+
+        cout << "Area: "
+             << area.areaName
+             << endl;
+
+
+        cout << "Food demand: ";
+        cin >> request.foodDemand;
+
+        if (request.foodDemand < 0)
+        {
+            cout << "Food demand cannot be negative."
+                 << endl;
+            return 1;
+        }
+
+
+        cout << "Water demand: ";
+        cin >> request.waterDemand;
+
+        if (request.waterDemand < 0)
+        {
+            cout << "Water demand cannot be negative."
+                 << endl;
+            return 1;
+        }
+
+
+        cout << "Medicine demand: ";
+        cin >> request.medicineDemand;
+
+        if (request.medicineDemand < 0)
+        {
+            cout << "Medicine demand cannot be negative."
+                 << endl;
+            return 1;
+        }
+
+
+        cout << "Blanket demand: ";
+        cin >> request.blanketDemand;
+
+        if (request.blanketDemand < 0)
+        {
+            cout << "Blanket demand cannot be negative."
+                 << endl;
+            return 1;
+        }
+
+
+        requests.push_back(request);
+    }
+
+
+    // RESOURCE ALLOCATION
+    ResourceAllocator allocator(available);
+
+    vector<AllocationRecord> allocationRecords =
+        allocator.allocateResources(requests);
+
+
+    // FINAL REPORT
+    allocator.displayAllocationReport(
+        allocationRecords
+    );
+
+    allocator.displayRemainingResources();
 
     return 0;
 }
