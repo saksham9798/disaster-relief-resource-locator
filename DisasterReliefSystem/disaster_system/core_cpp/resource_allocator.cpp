@@ -10,53 +10,22 @@ using namespace std;
 // Constructor
 ResourceAllocator::ResourceAllocator(
     const AvailableResources& resources
-)
-{
-    available = resources;
-}
+) : available(resources){}
 
 
 // Resource allocation
-vector<AllocationRecord> ResourceAllocator::allocateResources(
-    vector<ResourceRequest> requests
+vector<AllocationRecord>ResourceAllocator::allocateResources(
+    const vector<ResourceRequest>& requests
 )
 {
     vector<AllocationRecord> records;
 
-    // Sort according to priority rules.
-    sort(
-        requests.begin(),
-        requests.end(),
-        [](const ResourceRequest& first,
-           const ResourceRequest& second)
-        {
-            // Higher priority score first
-            if (first.priorityScore != second.priorityScore)
-            {
-                return first.priorityScore >
-                       second.priorityScore;
-            }
-
-            // If priority is equal,
-            // longer waiting time first
-            if (first.waitingTime != second.waitingTime)
-            {
-                return first.waitingTime >
-                       second.waitingTime;
-            }
-
-            // Final tie-breaker:
-            // alphabetical area name
-            return first.areaName <
-                   second.areaName;
-        }
-    );
-
+    records.reserve(requests.size());
 
     // Process areas one by one
     for (const ResourceRequest& request : requests)
     {
-        AllocationRecord record;
+        AllocationRecord record{};
 
         record.areaName = request.areaName;
         record.priorityScore = request.priorityScore;
@@ -77,9 +46,7 @@ vector<AllocationRecord> ResourceAllocator::allocateResources(
         available.food -= record.foodAllocated;
 
         record.foodUnmet =
-            request.foodDemand -
-            record.foodAllocated;
-
+            request.foodDemand - record.foodAllocated;
 
         // Allocate Water
         record.waterAllocated =
@@ -88,34 +55,27 @@ vector<AllocationRecord> ResourceAllocator::allocateResources(
         available.water -= record.waterAllocated;
 
         record.waterUnmet =
-            request.waterDemand -
-            record.waterAllocated;
+            request.waterDemand - record.waterAllocated;
 
 
         // Allocate Medicine
         record.medicineAllocated =
-            min(request.medicineDemand,
-                available.medicine);
+            min(request.medicineDemand, available.medicine);
 
-        available.medicine -=
-            record.medicineAllocated;
+        available.medicine -= record.medicineAllocated;
 
         record.medicineUnmet =
-            request.medicineDemand -
-            record.medicineAllocated;
+            request.medicineDemand - record.medicineAllocated;
 
 
         // Allocate Blankets
         record.blanketAllocated =
-            min(request.blanketDemand,
-                available.blankets);
+            min(request.blanketDemand, available.blankets);
 
-        available.blankets -=
-            record.blanketAllocated;
+        available.blankets -= record.blanketAllocated;
 
         record.blanketUnmet =
-            request.blanketDemand -
-            record.blanketAllocated;
+            request.blanketDemand - record.blanketAllocated;
 
 
         // Store allocation result
