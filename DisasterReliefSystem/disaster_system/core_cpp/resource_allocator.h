@@ -14,12 +14,12 @@ private:
 
 public:
 
-    ResourceAllocator(
+    explicit ResourceAllocator(
         const AvailableResources& resources
     );
 
     vector<AllocationRecord> allocateResources(
-        vector<ResourceRequest> requests
+        const vector<ResourceRequest>& requests
     );
 
     RemainingResources getRemainingResources() const;

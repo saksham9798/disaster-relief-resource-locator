@@ -5,6 +5,7 @@ from .models import (
     AvailableResources,
     ResourceRequest,
     AllocationRecord,
+    RemainingResources,
 )
 
 from .forms import (
@@ -13,7 +14,8 @@ from .forms import (
     ResourceRequestForm,
 )
 
-from .priority_service import calculate_all_priorities
+from .cpp_priority import calculate_priorities_with_cpp
+from .cpp_allocation import allocate_resources_with_cpp
 
 
 # =====================================================
@@ -84,34 +86,79 @@ def areas(request):
 
 
 # =====================================================
-# ADD DISASTER AREA
+# ADD MULTIPLE DISASTER AREAS
 # =====================================================
 
 def add_area(request):
 
     if request.method == "POST":
 
-        form = DisasterAreaForm(request.POST)
+        try:
+            area_count = int(
+                request.POST.get(
+                    "area_count",
+                    1
+                )
+            )
 
-        if form.is_valid():
+        except (ValueError, TypeError):
+            area_count = 1
 
-            form.save()
+        # Prevent invalid number of forms
+        if area_count < 1:
+            area_count = 1
 
-            # Recalculate priority scores
-            # for all disaster areas.
-            calculate_all_priorities()
+        forms = []
+        all_valid = True
+
+        # ---------------------------------------------
+        # Create a form for every disaster area
+        # ---------------------------------------------
+
+        for i in range(area_count):
+
+            form = DisasterAreaForm(
+                request.POST,
+                prefix=f"area_{i}"
+            )
+
+            forms.append(form)
+
+            if not form.is_valid():
+                all_valid = False
+
+        # ---------------------------------------------
+        # Save all areas
+        # ---------------------------------------------
+
+        if all_valid:
+
+            for form in forms:
+                form.save()
+
+            # -----------------------------------------
+            # Run C++ priority calculator after
+            # ALL areas have been saved.
+            # -----------------------------------------
+
+            calculate_priorities_with_cpp()
 
             return redirect("areas")
 
     else:
 
-        form = DisasterAreaForm()
+        # First form displayed when page opens
+        forms = [
+            DisasterAreaForm(
+                prefix="area_0"
+            )
+        ]
 
     return render(
         request,
         "relief/add_area.html",
         {
-            "form": form,
+            "forms": forms,
             "edit_mode": False
         }
     )
@@ -139,9 +186,8 @@ def edit_area(request, area_id):
 
             form.save()
 
-            # Recalculate priority scores
-            # because area information changed.
-            calculate_all_priorities()
+            # Recalculate ALL areas using C++
+            calculate_priorities_with_cpp()
 
             return redirect("areas")
 
@@ -176,9 +222,8 @@ def delete_area(request, area_id):
 
         area.delete()
 
-        # Recalculate priority scores
-        # for remaining disaster areas.
-        calculate_all_priorities()
+        # Recalculate remaining areas using C++
+        calculate_priorities_with_cpp()
 
     return redirect("areas")
 
@@ -189,7 +234,9 @@ def delete_area(request, area_id):
 
 def resources(request):
 
-    available_resources = AvailableResources.objects.all()
+    available_resources = (
+        AvailableResources.objects.all()
+    )
 
     return render(
         request,
@@ -208,7 +255,9 @@ def add_resources(request):
 
     if request.method == "POST":
 
-        form = AvailableResourcesForm(request.POST)
+        form = AvailableResourcesForm(
+            request.POST
+        )
 
         if form.is_valid():
 
@@ -294,10 +343,13 @@ def delete_resources(request, resource_id):
 
 def relief_requests(request):
 
-    request_list = ResourceRequest.objects.select_related(
-        "area"
-    ).order_by(
-        "-area__priorityScore"
+    request_list = (
+        ResourceRequest.objects
+        .select_related("area")
+        .order_by(
+            "-area__priorityScore",
+            "area__id"
+        )
     )
 
     return render(
@@ -317,7 +369,9 @@ def add_request(request):
 
     if request.method == "POST":
 
-        form = ResourceRequestForm(request.POST)
+        form = ResourceRequestForm(
+            request.POST
+        )
 
         if form.is_valid():
 
@@ -344,17 +398,42 @@ def add_request(request):
 
 def allocation(request):
 
-    allocation_records = AllocationRecord.objects.select_related(
-        "area"
-    ).order_by(
-        "-priorityScore"
+    # -------------------------------------------------
+    # Run C++ resource allocation
+    # -------------------------------------------------
+
+    if request.method == "POST":
+
+        allocate_resources_with_cpp()
+
+        return redirect("allocation")
+
+    # -------------------------------------------------
+    # Get allocation records
+    # -------------------------------------------------
+
+    allocation_records = (
+        AllocationRecord.objects
+        .select_related("area")
+        .order_by("-priorityScore")
+    )
+
+    # -------------------------------------------------
+    # Get latest remaining resources
+    # -------------------------------------------------
+
+    remaining_resources = (
+        RemainingResources.objects
+        .order_by("-created_at")
+        .first()
     )
 
     return render(
         request,
         "relief/allocation.html",
         {
-            "allocations": allocation_records
+            "allocations": allocation_records,
+            "remaining_resources": remaining_resources,
         }
     )
 
@@ -365,7 +444,9 @@ def allocation(request):
 
 def analytics(request):
 
-    total_areas = DisasterArea.objects.count()
+    total_areas = (
+        DisasterArea.objects.count()
+    )
 
     context = {
 

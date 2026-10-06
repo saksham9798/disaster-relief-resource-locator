@@ -1,7 +1,13 @@
 {% extends "relief/base.html" %}
 
 {% block title %}
-Add Disaster Area | Disaster Relief System
+
+{% if edit_mode %}
+Edit Disaster Area | Disaster Relief System
+{% else %}
+Add Disaster Areas | Disaster Relief System
+{% endif %}
+
 {% endblock %}
 
 
@@ -15,18 +21,39 @@ Add Disaster Area | Disaster Relief System
             DISASTER MANAGEMENT
         </span>
 
+        {% if edit_mode %}
+
         <h1>
-            Add Disaster Area
+            Edit Disaster Area
         </h1>
 
         <p>
-            Enter information about a disaster-affected area.
+            Update the information for this disaster-affected area.
         </p>
+
+        {% else %}
+
+        <h1>
+            Add Disaster Areas
+        </h1>
+
+        <p>
+            Enter multiple disaster-affected areas and calculate
+            their priority levels using the C++ priority engine.
+        </p>
+
+        {% endif %}
 
     </div>
 
 </div>
 
+
+{% if edit_mode %}
+
+<!-- =================================================
+     EDIT SINGLE AREA
+     ================================================= -->
 
 <div class="form-card">
 
@@ -37,7 +64,8 @@ Add Disaster Area | Disaster Relief System
         </h2>
 
         <p>
-            These values will be used later for priority calculation.
+            Update the information and recalculate the priority
+            using the C++ backend.
         </p>
 
     </div>
@@ -51,9 +79,7 @@ Add Disaster Area | Disaster Relief System
         {% if form.non_field_errors %}
 
         <div class="form-error">
-
             {{ form.non_field_errors }}
-
         </div>
 
         {% endif %}
@@ -197,19 +223,18 @@ Add Disaster Area | Disaster Relief System
 
         <div class="form-actions">
 
-            <a href="{% url 'areas' %}"
-               class="btn btn-secondary">
-
+            <a
+                href="{% url 'areas' %}"
+                class="btn btn-secondary"
+            >
                 Cancel
-
             </a>
 
-
-            <button type="submit"
-                    class="btn btn-primary">
-
-                Save Disaster Area
-
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                Update & Calculate Priority
             </button>
 
         </div>
@@ -217,5 +242,887 @@ Add Disaster Area | Disaster Relief System
     </form>
 
 </div>
+
+
+{% else %}
+
+<!-- =================================================
+     ADD MULTIPLE AREAS
+     ================================================= -->
+
+<form method="POST" id="areas-form">
+
+    {% csrf_token %}
+
+
+    <input
+        type="hidden"
+        name="area_count"
+        id="area_count"
+        value="{{ forms|length }}"
+    >
+
+
+    <div id="area-container">
+
+        {% for form in forms %}
+
+        <div class="form-card area-entry-card">
+
+            <div class="area-card-header">
+
+                <div>
+
+                    <span class="section-label">
+                        AREA {{ forloop.counter }}
+                    </span>
+
+                    <h2>
+                        Disaster Area {{ forloop.counter }}
+                    </h2>
+
+                    <p>
+                        Enter information about this
+                        disaster-affected area.
+                    </p>
+
+                </div>
+
+
+                {% if not forloop.first %}
+
+                <button
+                    type="button"
+                    class="btn btn-delete remove-area"
+                >
+                    Remove
+                </button>
+
+                {% endif %}
+
+            </div>
+
+
+            {% if form.non_field_errors %}
+
+            <div class="form-error">
+                {{ form.non_field_errors }}
+            </div>
+
+            {% endif %}
+
+
+            <div class="form-grid">
+
+
+                <!-- Area Name -->
+
+                <div class="form-group">
+
+                    <label>
+                        {{ form.areaName.label }}
+                    </label>
+
+                    {{ form.areaName }}
+
+                    {% if form.areaName.errors %}
+
+                    <div class="field-error">
+                        {{ form.areaName.errors }}
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Severity -->
+
+                <div class="form-group">
+
+                    <label>
+                        {{ form.severity.label }}
+                    </label>
+
+                    {{ form.severity }}
+
+                    <small>
+                        Enter a value between 1 and 10.
+                    </small>
+
+                    {% if form.severity.errors %}
+
+                    <div class="field-error">
+                        {{ form.severity.errors }}
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Population -->
+
+                <div class="form-group">
+
+                    <label>
+                        {{ form.populationAffected.label }}
+                    </label>
+
+                    {{ form.populationAffected }}
+
+                    {% if form.populationAffected.errors %}
+
+                    <div class="field-error">
+                        {{ form.populationAffected.errors }}
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Medical Need -->
+
+                <div class="form-group">
+
+                    <label>
+                        {{ form.medicalNeed.label }}
+                    </label>
+
+                    {{ form.medicalNeed }}
+
+                    <small>
+                        Enter a value between 1 and 10.
+                    </small>
+
+                    {% if form.medicalNeed.errors %}
+
+                    <div class="field-error">
+                        {{ form.medicalNeed.errors }}
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Waiting Time -->
+
+                <div class="form-group">
+
+                    <label>
+                        {{ form.waitingTime.label }}
+                    </label>
+
+                    {{ form.waitingTime }}
+
+                    {% if form.waitingTime.errors %}
+
+                    <div class="field-error">
+                        {{ form.waitingTime.errors }}
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Resource Demand -->
+
+                <div class="form-group">
+
+                    <label>
+                        {{ form.resourceDemand.label }}
+                    </label>
+
+                    {{ form.resourceDemand }}
+
+                    {% if form.resourceDemand.errors %}
+
+                    <div class="field-error">
+                        {{ form.resourceDemand.errors }}
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- =================================================
+         ACTION BUTTONS
+         ================================================= -->
+
+    <div class="multiple-area-actions">
+
+        <button
+            type="button"
+            id="add-area-btn"
+            class="btn btn-secondary"
+        >
+            + Add Another Area
+        </button>
+
+
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+            Calculate Priorities & Save All Areas
+        </button>
+
+    </div>
+
+
+    <!-- =================================================
+         INFORMATION
+         ================================================= -->
+
+    <div class="info-card">
+
+        <h3>
+            C++ Priority Calculation
+        </h3>
+
+        <p>
+            All areas are submitted together to the C++
+            priority calculation engine.
+        </p>
+
+        <ul>
+
+            <li>
+                Severity — <strong>30%</strong>
+            </li>
+
+            <li>
+                Population Affected — <strong>25%</strong>
+            </li>
+
+            <li>
+                Medical Need — <strong>20%</strong>
+            </li>
+
+            <li>
+                Waiting Time — <strong>15%</strong>
+            </li>
+
+            <li>
+                Resource Demand — <strong>10%</strong>
+            </li>
+
+        </ul>
+
+        <p>
+            The system then assigns each area a priority level:
+            <strong>Critical</strong>,
+            <strong>High</strong>,
+            <strong>Medium</strong>,
+            or <strong>Low</strong>.
+        </p>
+
+    </div>
+
+</form>
+
+{% endif %}
+
+
+<!-- =====================================================
+     STYLES
+     ===================================================== -->
+
+<style>
+
+.area-entry-card {
+
+    margin-bottom: 20px;
+
+}
+
+
+.area-card-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    margin-bottom: 25px;
+
+}
+
+
+.area-card-header h2 {
+
+    margin: 6px 0;
+
+}
+
+
+.area-card-header p {
+
+    margin: 0;
+
+    color: #6b7280;
+
+}
+
+
+.form-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 20px;
+
+}
+
+
+.form-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+
+.form-group label {
+
+    font-weight: 600;
+
+    margin-bottom: 7px;
+
+}
+
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+
+    width: 100%;
+
+    padding: 11px 13px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    box-sizing: border-box;
+
+}
+
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+
+    outline: none;
+
+    border-color: #2563eb;
+
+}
+
+
+.form-group small {
+
+    margin-top: 5px;
+
+    color: #6b7280;
+
+}
+
+
+.field-error,
+.form-error {
+
+    color: #dc2626;
+
+    font-size: 14px;
+
+    margin-top: 5px;
+
+}
+
+
+.multiple-area-actions {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-top: 25px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.btn-secondary {
+
+    background: #f3f4f6;
+
+    color: #1f2937;
+
+}
+
+
+.btn-secondary:hover {
+
+    background: #e5e7eb;
+
+}
+
+
+.btn-delete {
+
+    border: none;
+
+    cursor: pointer;
+
+}
+
+
+.info-card {
+
+    padding: 20px;
+
+    margin-top: 20px;
+
+    margin-bottom: 30px;
+
+    border-radius: 12px;
+
+    background: #eff6ff;
+
+    border: 1px solid #bfdbfe;
+
+}
+
+
+.info-card h3 {
+
+    margin-top: 0;
+
+}
+
+
+.info-card li {
+
+    margin-bottom: 6px;
+
+}
+
+
+@media (max-width: 700px) {
+
+    .form-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .area-card-header {
+
+        flex-direction: column;
+
+        gap: 15px;
+
+    }
+
+
+    .multiple-area-actions {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+
+    .multiple-area-actions .btn {
+
+        width: 100%;
+
+    }
+
+}
+
+</style>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+{% if not edit_mode %}
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const container =
+            document.getElementById(
+                "area-container"
+            );
+
+        const addButton =
+            document.getElementById(
+                "add-area-btn"
+            );
+
+        const areaCount =
+            document.getElementById(
+                "area_count"
+            );
+
+
+        /*
+         * Add another disaster area
+         */
+
+        addButton.addEventListener(
+            "click",
+            function () {
+
+                const cards =
+                    container.querySelectorAll(
+                        ".area-entry-card"
+                    );
+
+
+                const newIndex =
+                    cards.length;
+
+
+                /*
+                 * Copy the first card
+                 */
+
+                const newCard =
+                    cards[0].cloneNode(true);
+
+
+                /*
+                 * Update heading
+                 */
+
+                const heading =
+                    newCard.querySelector(
+                        "h2"
+                    );
+
+
+                heading.textContent =
+                    "Disaster Area "
+                    + (newIndex + 1);
+
+
+                /*
+                 * Update section label
+                 */
+
+                const label =
+                    newCard.querySelector(
+                        ".section-label"
+                    );
+
+
+                if (label) {
+
+                    label.textContent =
+                        "AREA "
+                        + (newIndex + 1);
+
+                }
+
+
+                /*
+                 * Remove validation errors
+                 */
+
+                newCard
+                    .querySelectorAll(
+                        ".field-error, .form-error"
+                    )
+                    .forEach(
+                        function (element) {
+
+                            element.remove();
+
+                        }
+                    );
+
+
+                /*
+                 * Clear and rename inputs
+                 */
+
+                newCard
+                    .querySelectorAll(
+                        "input, select, textarea"
+                    )
+                    .forEach(
+                        function (element) {
+
+                            if (element.name) {
+
+                                element.name =
+                                    element.name.replace(
+                                        /area_\d+/,
+                                        "area_" + newIndex
+                                    );
+
+                            }
+
+
+                            if (element.id) {
+
+                                element.id =
+                                    element.id.replace(
+                                        /area_\d+/,
+                                        "area_" + newIndex
+                                    );
+
+                            }
+
+
+                            /*
+                             * Clear input value
+                             */
+
+                            element.value = "";
+
+                        }
+                    );
+
+
+                /*
+                 * Add remove button
+                 */
+
+                let removeButton =
+                    newCard.querySelector(
+                        ".remove-area"
+                    );
+
+
+                if (!removeButton) {
+
+                    const header =
+                        newCard.querySelector(
+                            ".area-card-header"
+                        );
+
+
+                    removeButton =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    removeButton.type =
+                        "button";
+
+                    removeButton.className =
+                        "btn btn-delete remove-area";
+
+                    removeButton.textContent =
+                        "Remove";
+
+
+                    header.appendChild(
+                        removeButton
+                    );
+
+                }
+
+
+                /*
+                 * Add new card
+                 */
+
+                container.appendChild(
+                    newCard
+                );
+
+
+                /*
+                 * Update number of forms
+                 */
+
+                areaCount.value =
+                    newIndex + 1;
+
+            }
+        );
+
+
+        /*
+         * Remove disaster area
+         */
+
+        container.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target.classList.contains(
+                        "remove-area"
+                    )
+                ) {
+
+                    const cards =
+                        container.querySelectorAll(
+                            ".area-entry-card"
+                        );
+
+
+                    /*
+                     * Keep at least one card
+                     */
+
+                    if (cards.length <= 1) {
+
+                        alert(
+                            "At least one disaster area is required."
+                        );
+
+                        return;
+
+                    }
+
+
+                    /*
+                     * Remove card
+                     */
+
+                    event.target
+                        .closest(
+                            ".area-entry-card"
+                        )
+                        .remove();
+
+
+                    /*
+                     * Re-index remaining forms
+                     */
+
+                    const remainingCards =
+                        container.querySelectorAll(
+                            ".area-entry-card"
+                        );
+
+
+                    remainingCards.forEach(
+                        function (
+                            card,
+                            index
+                        ) {
+
+                            const heading =
+                                card.querySelector(
+                                    "h2"
+                                );
+
+
+                            heading.textContent =
+                                "Disaster Area "
+                                + (index + 1);
+
+
+                            const label =
+                                card.querySelector(
+                                    ".section-label"
+                                );
+
+
+                            if (label) {
+
+                                label.textContent =
+                                    "AREA "
+                                    + (index + 1);
+
+                            }
+
+
+                            card
+                                .querySelectorAll(
+                                    "input, select, textarea"
+                                )
+                                .forEach(
+                                    function (
+                                        element
+                                    ) {
+
+                                        if (
+                                            element.name
+                                        ) {
+
+                                            element.name =
+                                                element.name.replace(
+                                                    /area_\d+/,
+                                                    "area_" + index
+                                                );
+
+                                        }
+
+
+                                        if (
+                                            element.id
+                                        ) {
+
+                                            element.id =
+                                                element.id.replace(
+                                                    /area_\d+/,
+                                                    "area_" + index
+                                                );
+
+                                        }
+
+                                    }
+                                );
+
+                        }
+                    );
+
+
+                    /*
+                     * Update form count
+                     */
+
+                    areaCount.value =
+                        remainingCards.length;
+
+                }
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+{% endif %}
 
 {% endblock %}

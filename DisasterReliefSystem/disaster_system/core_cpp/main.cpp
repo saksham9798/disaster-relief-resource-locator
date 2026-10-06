@@ -1,143 +1,159 @@
-//this main file is for testing purpose
 #include "priority_calculator.h"
 #include "sorting_searching.h"
 #include "resource_allocator.h"
 #include <iostream>
 #include <vector>
+#include <limits>
+#include <unordered_map>
 
 using namespace std;
 
+
+// INPUT VALIDATION
+bool readInt(
+    const string& prompt, int& value, int minimum
+)
+{
+    cout << prompt;
+
+    if (!(cin >> value) || value < minimum)
+    {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Invalid input." << endl;
+        return false;
+    }
+    return true;
+}
+
+bool readDouble(
+    const string& prompt, double& value,double minimum, double maximum
+)
+{
+    cout << prompt;
+
+    if (!(cin >> value) || value < minimum || value > maximum)
+    {
+        cin.clear();
+        cin.ignore( numeric_limits<streamsize>::max(), '\n');
+        cout << "Invalid input." << endl;
+        return false;
+    }
+    return true;
+}
+
+// MAIN
 int main()
 {
     int numberOfAreas;
 
-    cout << "Enter number of disaster areas: ";
-    cin >> numberOfAreas;
-
-    // Validate number of areas
-    if (numberOfAreas <= 0)
+    // INPUT NUMBER OF AREAS
+    if (!readInt(
+            "Enter number of disaster areas: ", numberOfAreas, 1))
     {
-        cout << "Invalid number of areas." << endl;
         return 1;
     }
 
     vector<DisasterArea> areas;
+    areas.reserve(numberOfAreas);
 
-    // Input Disaster Aera Data
+    // INPUT DISASTER AREAS
     for (int i = 0; i < numberOfAreas; i++)
     {
-        DisasterArea area;
-
-        cout << "\nEnter details for Area " << i + 1 << endl;
+        DisasterArea area{};
+        cout << "\nEnter details for Area "
+             << i + 1 << endl;
 
         cout << "Area name: ";
         cin >> area.areaName;
 
-        cout << "Severity (1-10): ";
-        cin >> area.severity;
-
-        if (area.severity < 1 || area.severity > 10)
+        // Unique area names
+        if (searchAreaByName( areas, area.areaName) != -1)
         {
-            cout << "Invalid severity. Enter a value from 1 to 10." << endl;
+            cout << "Area name must be unique." << endl;
+            return 1;
+        }
+
+        if (!readDouble( "Severity (1-10): ", area.severity, 1.0, 10.0))
+        {
             return 1;
         }
 
 
-        cout << "Population affected: ";
-        cin >> area.populationAffected;
-
-        if (area.populationAffected <= 0)
+        if (!readInt( "Population affected: ", area.populationAffected, 1))
         {
-            cout << "Population must be greater than 0." << endl;
             return 1;
         }
 
-
-        cout << "Medical need (1-10): ";
-        cin >> area.medicalNeed;
-
-        if (area.medicalNeed < 1 || area.medicalNeed > 10)
+        if (!readDouble( "Medical need (1-10): ", area.medicalNeed, 1.0, 10.0))
         {
-            cout << "Invalid medical need. Enter a value from 1 to 10." << endl;
             return 1;
         }
 
-
-        cout << "Waiting time (hours): ";
-        cin >> area.waitingTime;
-
-        if (area.waitingTime < 0)
+        if (!readDouble( "Waiting time (hours): ", area.waitingTime, 0.0,
+                numeric_limits<double>::max()))
         {
-            cout << "Waiting time cannot be negative." << endl;
             return 1;
         }
 
-
-        cout << "Resource demand: ";
-        cin >> area.resourceDemand;
-
-        if (area.resourceDemand <= 0)
+        if (!readInt( "Resource demand: ", area.resourceDemand, 1))
         {
-            cout << "Resource demand must be greater than 0." << endl;
             return 1;
         }
 
+        area.priorityScore = 0.0;
 
-        // Initially no score
-        area.priorityScore = 0;
         area.priorityLevel = "Not Calculated";
 
         areas.push_back(area);
     }
 
 
-    // Calculate priority
+    // CALCULATE PRIORITY
     calculateAllPriorities(areas);
 
-    // Display results
     displayPriorities(areas);
 
-    // PRIORITY QUEUE
+
+    // CREATE PRIORITY QUEUE
     PriorityQueueManager priorityManager;
 
-    // Insert all disaster areas into priority queue.
     for (const DisasterArea& area : areas)
     {
         priorityManager.addArea(area);
     }
 
-    // Display processing order.
     priorityManager.displayProcessingOrder();
 
-    // SEARCHING
+
+    // SEARCH
     string searchName;
 
     cout << "\nEnter area name to search: ";
+
     cin >> searchName;
 
-    int searchIndex = searchAreaByName(areas, searchName);
+    int searchIndex =
+        searchAreaByName( areas, searchName);
+
 
     if (searchIndex != -1)
     {
+        const DisasterArea& area = areas[searchIndex];
+
         cout << "\nSEARCH RESULT :\n";
 
-        cout << "Area Name: "
-             << areas[searchIndex].areaName
+        cout << "Area Name: " << area.areaName
              << endl;
 
-        cout << "Priority Score: "
-             << areas[searchIndex].priorityScore
+        cout << "Priority Score: " << area.priorityScore
              << endl;
 
-        cout << "Priority Level: "
-             << areas[searchIndex].priorityLevel
+        cout << "Priority Level: " << area.priorityLevel
              << endl;
 
-        cout << "Waiting Time: "
-             << areas[searchIndex].waitingTime
-             << " hours"
+        cout << "Waiting Time: " << area.waitingTime << " hours"
              << endl;
-
     }
     else
     {
@@ -150,132 +166,137 @@ int main()
 
     displaySortedReport(areas);
 
+
     // AVAILABLE RESOURCES
-    AvailableResources available;
+    AvailableResources available{};
 
     cout << "\nAVAILABLE RESOURCES :\n";
 
-    cout << "Food: ";
-    cin >> available.food;
-
-    if (available.food < 0)
+    if (!readInt( "Food: ", available.food, 0))
     {
-        cout << "Food cannot be negative." << endl;
         return 1;
     }
 
 
-    cout << "Water: ";
-    cin >> available.water;
-
-    if (available.water < 0)
+    if (!readInt( "Water: ", available.water, 0))
     {
-        cout << "Water cannot be negative." << endl;
         return 1;
     }
 
 
-    cout << "Medicine: ";
-    cin >> available.medicine;
-
-    if (available.medicine < 0)
+    if (!readInt( "Medicine: ", available.medicine, 0))
     {
-        cout << "Medicine cannot be negative." << endl;
         return 1;
     }
 
 
-    cout << "Blankets: ";
-    cin >> available.blankets;
-
-    if (available.blankets < 0)
+    if (!readInt( "Blankets: ", available.blankets, 0))
     {
-        cout << "Blankets cannot be negative." << endl;
         return 1;
     }
 
 
-    // RESOURCE REQUIREMENTS
-    vector<ResourceRequest> requests;
+    // RESOURCE DEMANDS
+    unordered_map<string, ResourceRequest> requestByArea;
+
 
     for (const DisasterArea& area : areas)
     {
-        ResourceRequest request;
+        ResourceRequest request{};
 
         request.areaName = area.areaName;
-        request.priorityScore = area.priorityScore;
-        request.waitingTime = area.waitingTime;
-        request.priorityLevel = area.priorityLevel;
 
+        request.priorityScore = area.priorityScore;
+
+        request.waitingTime = area.waitingTime;
+
+        request.priorityLevel = area.priorityLevel;
 
         cout << "\nRESOURCE DEMAND :\n";
 
-        cout << "Area: "
+        cout << "Area: " << area.areaName
+             << endl;
+
+        if (!readInt( "Food demand: ", request.foodDemand, 0))
+        {
+            return 1;
+        }
+
+        if (!readInt( "Water demand: ", request.waterDemand, 0))
+        {
+            return 1;
+        }
+
+        if (!readInt( "Medicine demand: ", request.medicineDemand, 0))
+        {
+            return 1;
+        }
+
+        if (!readInt( "Blanket demand: ", request.blanketDemand, 0))
+        {
+            return 1;
+        }
+
+        requestByArea[request.areaName] = request;
+    }
+
+
+    // ACTUAL PRIORITY-QUEUE PROCESSING
+    // Rebuild queue because the sorted vector was changed during reporting.
+    PriorityQueueManager processingQueue;
+
+    for (const DisasterArea& area : areas)
+    {
+        processingQueue.addArea(area);
+    }
+
+
+    vector<ResourceRequest> orderedRequests;
+
+    orderedRequests.reserve(areas.size());
+
+    cout << "\nINTEGRATED PROCESSING ORDER :\n";
+
+    int rank = 1;
+
+
+    while (!processingQueue.isEmpty())
+    {
+        DisasterArea area =
+            processingQueue.getNextArea();
+
+
+        cout << rank++ << ". "
              << area.areaName
+             << " | Priority: "
+             << area.priorityScore
+             << " | Level: "
+             << area.priorityLevel
              << endl;
 
 
-        cout << "Food demand: ";
-        cin >> request.foodDemand;
-
-        if (request.foodDemand < 0)
-        {
-            cout << "Food demand cannot be negative."
-                 << endl;
-            return 1;
-        }
-
-
-        cout << "Water demand: ";
-        cin >> request.waterDemand;
-
-        if (request.waterDemand < 0)
-        {
-            cout << "Water demand cannot be negative."
-                 << endl;
-            return 1;
-        }
-
-
-        cout << "Medicine demand: ";
-        cin >> request.medicineDemand;
-
-        if (request.medicineDemand < 0)
-        {
-            cout << "Medicine demand cannot be negative."
-                 << endl;
-            return 1;
-        }
-
-
-        cout << "Blanket demand: ";
-        cin >> request.blanketDemand;
-
-        if (request.blanketDemand < 0)
-        {
-            cout << "Blanket demand cannot be negative."
-                 << endl;
-            return 1;
-        }
-
-
-        requests.push_back(request);
+        orderedRequests.push_back(
+            requestByArea.at(
+                area.areaName
+            )
+        );
     }
 
 
     // RESOURCE ALLOCATION
     ResourceAllocator allocator(available);
 
-    vector<AllocationRecord> allocationRecords =
-        allocator.allocateResources(requests);
+    vector<AllocationRecord>
+        allocationRecords = allocator.allocateResources(orderedRequests);
 
 
     // FINAL REPORT
-    allocator.displayAllocationReport(
-        allocationRecords
-    );
+    allocator.displayAllocationReport(allocationRecords);
 
     allocator.displayRemainingResources();
+
+    cout << "\nFINAL REPORT GENERATED SUCCESSFULLY."
+         << endl;
 
     return 0;
 }

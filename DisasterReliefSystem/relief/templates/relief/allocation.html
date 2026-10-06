@@ -4,7 +4,6 @@
 Resource Allocation | Disaster Relief System
 {% endblock %}
 
-
 {% block content %}
 
 <div class="page-header">
@@ -28,6 +27,49 @@ Resource Allocation | Disaster Relief System
 
 </div>
 
+
+<!-- RUN ALLOCATION -->
+
+<div class="table-card">
+
+    <div class="table-header">
+
+        <div>
+
+            <h2>
+                Process Resource Allocation
+            </h2>
+
+            <p>
+                Run the C++ resource allocation algorithm using
+                the current priorities and available resources.
+            </p>
+
+        </div>
+
+        <div>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Run Allocation
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ALLOCATION REPORT -->
 
 <div class="table-card">
 
@@ -107,12 +149,16 @@ Resource Allocation | Disaster Relief System
 
 
                     <td class="bold-text">
+
                         {{ allocation.area.areaName }}
+
                     </td>
 
 
                     <td class="score">
+
                         {{ allocation.priorityScore|floatformat:2 }}
+
                     </td>
 
 
@@ -153,16 +199,18 @@ Resource Allocation | Disaster Relief System
                     </td>
 
 
-                    <!-- Food -->
+                    <!-- FOOD -->
 
                     <td>
 
                         <div class="allocation-cell">
 
                             <span>
+
                                 {{ allocation.foodAllocated }}
                                 /
                                 {{ allocation.foodDemand }}
+
                             </span>
 
                             {% if allocation.foodUnmet > 0 %}
@@ -184,16 +232,18 @@ Resource Allocation | Disaster Relief System
                     </td>
 
 
-                    <!-- Water -->
+                    <!-- WATER -->
 
                     <td>
 
                         <div class="allocation-cell">
 
                             <span>
+
                                 {{ allocation.waterAllocated }}
                                 /
                                 {{ allocation.waterDemand }}
+
                             </span>
 
                             {% if allocation.waterUnmet > 0 %}
@@ -215,16 +265,18 @@ Resource Allocation | Disaster Relief System
                     </td>
 
 
-                    <!-- Medicine -->
+                    <!-- MEDICINE -->
 
                     <td>
 
                         <div class="allocation-cell">
 
                             <span>
+
                                 {{ allocation.medicineAllocated }}
                                 /
                                 {{ allocation.medicineDemand }}
+
                             </span>
 
                             {% if allocation.medicineUnmet > 0 %}
@@ -246,16 +298,18 @@ Resource Allocation | Disaster Relief System
                     </td>
 
 
-                    <!-- Blankets -->
+                    <!-- BLANKETS -->
 
                     <td>
 
                         <div class="allocation-cell">
 
                             <span>
+
                                 {{ allocation.blanketAllocated }}
                                 /
                                 {{ allocation.blanketDemand }}
+
                             </span>
 
                             {% if allocation.blanketUnmet > 0 %}
@@ -286,6 +340,7 @@ Resource Allocation | Disaster Relief System
 
     </div>
 
+
     {% else %}
 
     <div class="empty-state">
@@ -301,6 +356,124 @@ Resource Allocation | Disaster Relief System
         <p>
             Resource allocation records will appear here
             after allocation processing.
+        </p>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                Run Allocation
+            </button>
+
+        </form>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- REMAINING RESOURCES -->
+
+<div class="table-card">
+
+    <div class="table-header">
+
+        <div>
+
+            <h2>
+                Remaining Resources
+            </h2>
+
+            <p>
+                Resources remaining after the allocation process.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    {% if remaining_resources %}
+
+    <div class="table-wrapper">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Food
+                    </th>
+
+                    <th>
+                        Water
+                    </th>
+
+                    <th>
+                        Medicine
+                    </th>
+
+                    <th>
+                        Blankets
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                <tr>
+
+                    <td>
+                        {{ remaining_resources.food }}
+                    </td>
+
+                    <td>
+                        {{ remaining_resources.water }}
+                    </td>
+
+                    <td>
+                        {{ remaining_resources.medicine }}
+                    </td>
+
+                    <td>
+                        {{ remaining_resources.blankets }}
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    {% else %}
+
+    <div class="empty-state">
+
+        <div class="empty-icon">
+            📦
+        </div>
+
+        <h3>
+            No Remaining Resource Data
+        </h3>
+
+        <p>
+            Run the allocation process to calculate
+            remaining resources.
         </p>
 
     </div>

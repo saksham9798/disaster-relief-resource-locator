@@ -63,21 +63,24 @@ DisasterArea PriorityQueueManager::getNextArea()
 }
 
 // Display areas in processing order.
-void PriorityQueueManager::displayProcessingOrder()
+void PriorityQueueManager::displayProcessingOrder() const
 {
     cout << "\nPRIORITY QUEUE PROCESSING :\n";
+
+    // Copy queue so original queue is not destroyed.
+    priority_queue< DisasterArea, vector<DisasterArea>,
+        PriorityComparator
+    > tempQueue = priorityQueue;
 
     int position = 1;
 
     cout << fixed << setprecision(2);
 
-    while (!priorityQueue.empty())
+    while (!tempQueue.empty())
     {
-        DisasterArea area = priorityQueue.top();
+        const DisasterArea& area = tempQueue.top();
 
-        priorityQueue.pop();
-
-        cout << position << ". "
+        cout << position++ << ". "
              << area.areaName
              << " | Priority: "
              << area.priorityScore
@@ -87,8 +90,7 @@ void PriorityQueueManager::displayProcessingOrder()
              << " | Level: "
              << area.priorityLevel
              << endl;
-
-        position++;
+        tempQueue.pop();
     }
 }
 

@@ -38,7 +38,7 @@ public:
 
     DisasterArea getNextArea();
 
-    void displayProcessingOrder();
+    void displayProcessingOrder() const;
 };
 
 // SEARCHING

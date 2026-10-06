@@ -25,6 +25,14 @@ Relief Requests | Disaster Relief System
 
     </div>
 
+    <div>
+
+        <a href="{% url 'add_request' %}" class="btn btn-primary">
+            + Add Relief Request
+        </a>
+
+    </div>
+
 </div>
 
 
@@ -104,15 +112,18 @@ Relief Requests | Disaster Relief System
                         {{ forloop.counter }}
                     </td>
 
+
                     <td class="bold-text">
                         {{ request_item.area.areaName }}
                     </td>
+
 
                     <td class="score">
 
                         {{ request_item.area.priorityScore|floatformat:2 }}
 
                     </td>
+
 
                     <td>
 
@@ -150,17 +161,21 @@ Relief Requests | Disaster Relief System
 
                     </td>
 
+
                     <td>
                         {{ request_item.foodDemand }}
                     </td>
+
 
                     <td>
                         {{ request_item.waterDemand }}
                     </td>
 
+
                     <td>
                         {{ request_item.medicineDemand }}
                     </td>
+
 
                     <td>
                         {{ request_item.blanketDemand }}
@@ -192,10 +207,15 @@ Relief Requests | Disaster Relief System
             No resource requests are currently available.
         </p>
 
+        <a href="{% url 'add_request' %}" class="btn btn-primary">
+            + Add First Request
+        </a>
+
     </div>
 
     {% endif %}
 
 </div>
+
 
 {% endblock %}

@@ -7,17 +7,23 @@ Add Relief Request | Disaster Relief System
 {% block content %}
 
 <div class="page-header">
+
     <div>
+
         <span class="section-label">
             RESOURCE MANAGEMENT
         </span>
 
-        <h1>Add Relief Request</h1>
+        <h1>
+            Add Relief Request
+        </h1>
 
         <p>
             Enter the resources required by a disaster-affected area.
         </p>
+
     </div>
+
 </div>
 
 
@@ -25,7 +31,9 @@ Add Relief Request | Disaster Relief System
 
     <div class="form-card-header">
 
-        <h2>Relief Request Information</h2>
+        <h2>
+            Relief Request Information
+        </h2>
 
         <p>
             Select a disaster area and enter the required resources.
@@ -40,9 +48,11 @@ Add Relief Request | Disaster Relief System
 
 
         {% if form.non_field_errors %}
+
         <div class="form-error">
             {{ form.non_field_errors }}
         </div>
+
         {% endif %}
 
 
@@ -57,9 +67,11 @@ Add Relief Request | Disaster Relief System
             {{ form.area }}
 
             {% if form.area.errors %}
+
             <div class="field-error">
                 {{ form.area.errors }}
             </div>
+
             {% endif %}
 
         </div>
@@ -76,9 +88,11 @@ Add Relief Request | Disaster Relief System
             {{ form.foodDemand }}
 
             {% if form.foodDemand.errors %}
+
             <div class="field-error">
                 {{ form.foodDemand.errors }}
             </div>
+
             {% endif %}
 
         </div>
@@ -95,9 +109,11 @@ Add Relief Request | Disaster Relief System
             {{ form.waterDemand }}
 
             {% if form.waterDemand.errors %}
+
             <div class="field-error">
                 {{ form.waterDemand.errors }}
             </div>
+
             {% endif %}
 
         </div>
@@ -114,9 +130,11 @@ Add Relief Request | Disaster Relief System
             {{ form.medicineDemand }}
 
             {% if form.medicineDemand.errors %}
+
             <div class="field-error">
                 {{ form.medicineDemand.errors }}
             </div>
+
             {% endif %}
 
         </div>
@@ -133,9 +151,11 @@ Add Relief Request | Disaster Relief System
             {{ form.blanketDemand }}
 
             {% if form.blanketDemand.errors %}
+
             <div class="field-error">
                 {{ form.blanketDemand.errors }}
             </div>
+
             {% endif %}
 
         </div>
