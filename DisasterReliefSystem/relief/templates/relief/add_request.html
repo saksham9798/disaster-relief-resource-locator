@@ -1,0 +1,168 @@
+{% extends "relief/base.html" %}
+
+{% block title %}
+Add Relief Request | Disaster Relief System
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <span class="section-label">
+            RESOURCE MANAGEMENT
+        </span>
+
+        <h1>Add Relief Request</h1>
+
+        <p>
+            Enter the resources required by a disaster-affected area.
+        </p>
+    </div>
+</div>
+
+
+<div class="form-card">
+
+    <div class="form-card-header">
+
+        <h2>Relief Request Information</h2>
+
+        <p>
+            Select a disaster area and enter the required resources.
+        </p>
+
+    </div>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        {% if form.non_field_errors %}
+        <div class="form-error">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+
+        <!-- DISASTER AREA -->
+
+        <div class="form-group">
+
+            <label for="{{ form.area.id_for_label }}">
+                {{ form.area.label }}
+            </label>
+
+            {{ form.area }}
+
+            {% if form.area.errors %}
+            <div class="field-error">
+                {{ form.area.errors }}
+            </div>
+            {% endif %}
+
+        </div>
+
+
+        <!-- FOOD -->
+
+        <div class="form-group">
+
+            <label for="{{ form.foodDemand.id_for_label }}">
+                {{ form.foodDemand.label }}
+            </label>
+
+            {{ form.foodDemand }}
+
+            {% if form.foodDemand.errors %}
+            <div class="field-error">
+                {{ form.foodDemand.errors }}
+            </div>
+            {% endif %}
+
+        </div>
+
+
+        <!-- WATER -->
+
+        <div class="form-group">
+
+            <label for="{{ form.waterDemand.id_for_label }}">
+                {{ form.waterDemand.label }}
+            </label>
+
+            {{ form.waterDemand }}
+
+            {% if form.waterDemand.errors %}
+            <div class="field-error">
+                {{ form.waterDemand.errors }}
+            </div>
+            {% endif %}
+
+        </div>
+
+
+        <!-- MEDICINE -->
+
+        <div class="form-group">
+
+            <label for="{{ form.medicineDemand.id_for_label }}">
+                {{ form.medicineDemand.label }}
+            </label>
+
+            {{ form.medicineDemand }}
+
+            {% if form.medicineDemand.errors %}
+            <div class="field-error">
+                {{ form.medicineDemand.errors }}
+            </div>
+            {% endif %}
+
+        </div>
+
+
+        <!-- BLANKETS -->
+
+        <div class="form-group">
+
+            <label for="{{ form.blanketDemand.id_for_label }}">
+                {{ form.blanketDemand.label }}
+            </label>
+
+            {{ form.blanketDemand }}
+
+            {% if form.blanketDemand.errors %}
+            <div class="field-error">
+                {{ form.blanketDemand.errors }}
+            </div>
+            {% endif %}
+
+        </div>
+
+
+        <!-- BUTTONS -->
+
+        <div class="form-actions">
+
+            <a
+                href="{% url 'requests' %}"
+                class="btn btn-secondary"
+            >
+                Cancel
+            </a>
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                Save Relief Request
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

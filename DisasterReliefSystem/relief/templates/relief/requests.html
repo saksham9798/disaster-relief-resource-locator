@@ -1,0 +1,201 @@
+{% extends "relief/base.html" %}
+
+{% block title %}
+Relief Requests | Disaster Relief System
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <span class="section-label">
+            RELIEF MANAGEMENT
+        </span>
+
+        <h1>
+            Relief Requests
+        </h1>
+
+        <p>
+            Resource requirements submitted by affected areas.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="table-card">
+
+    <div class="table-header">
+
+        <div>
+
+            <h2>
+                Resource Requests
+            </h2>
+
+            <p>
+                Requests are ordered according to area priority.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    {% if resource_requests %}
+
+    <div class="table-wrapper">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        #
+                    </th>
+
+                    <th>
+                        Disaster Area
+                    </th>
+
+                    <th>
+                        Priority Score
+                    </th>
+
+                    <th>
+                        Priority Level
+                    </th>
+
+                    <th>
+                        Food
+                    </th>
+
+                    <th>
+                        Water
+                    </th>
+
+                    <th>
+                        Medicine
+                    </th>
+
+                    <th>
+                        Blankets
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for request_item in resource_requests %}
+
+                <tr>
+
+                    <td>
+                        {{ forloop.counter }}
+                    </td>
+
+                    <td class="bold-text">
+                        {{ request_item.area.areaName }}
+                    </td>
+
+                    <td class="score">
+
+                        {{ request_item.area.priorityScore|floatformat:2 }}
+
+                    </td>
+
+                    <td>
+
+                        {% if request_item.area.priorityLevel == "Critical" %}
+
+                        <span class="badge badge-critical">
+                            Critical
+                        </span>
+
+                        {% elif request_item.area.priorityLevel == "High" %}
+
+                        <span class="badge badge-high">
+                            High
+                        </span>
+
+                        {% elif request_item.area.priorityLevel == "Medium" %}
+
+                        <span class="badge badge-medium">
+                            Medium
+                        </span>
+
+                        {% elif request_item.area.priorityLevel == "Low" %}
+
+                        <span class="badge badge-low">
+                            Low
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge badge-default">
+                            {{ request_item.area.priorityLevel }}
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        {{ request_item.foodDemand }}
+                    </td>
+
+                    <td>
+                        {{ request_item.waterDemand }}
+                    </td>
+
+                    <td>
+                        {{ request_item.medicineDemand }}
+                    </td>
+
+                    <td>
+                        {{ request_item.blanketDemand }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+
+        <div class="empty-icon">
+            📋
+        </div>
+
+        <h3>
+            No Relief Requests Found
+        </h3>
+
+        <p>
+            No resource requests are currently available.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,150 @@
+{% extends "relief/base.html" %}
+
+{% block title %}
+Edit Resource Stock | Disaster Relief System
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <span class="section-label">
+            RESOURCE MANAGEMENT
+        </span>
+
+        <h1>
+            Edit Resource Stock
+        </h1>
+
+        <p>
+            Update the available quantities of relief resources.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="form-card">
+
+    <div class="form-card-header">
+
+        <h2>
+            Update Resource Information
+        </h2>
+
+        <p>
+            Modify the current stock quantities.
+        </p>
+
+    </div>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        {% if form.non_field_errors %}
+
+        <div class="form-error">
+            {{ form.non_field_errors }}
+        </div>
+
+        {% endif %}
+
+
+        <div class="form-group">
+
+            <label for="{{ form.food.id_for_label }}">
+                {{ form.food.label }}
+            </label>
+
+            {{ form.food }}
+
+            {% if form.food.errors %}
+                <div class="field-error">
+                    {{ form.food.errors }}
+                </div>
+            {% endif %}
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="{{ form.water.id_for_label }}">
+                {{ form.water.label }}
+            </label>
+
+            {{ form.water }}
+
+            {% if form.water.errors %}
+                <div class="field-error">
+                    {{ form.water.errors }}
+                </div>
+            {% endif %}
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="{{ form.medicine.id_for_label }}">
+                {{ form.medicine.label }}
+            </label>
+
+            {{ form.medicine }}
+
+            {% if form.medicine.errors %}
+                <div class="field-error">
+                    {{ form.medicine.errors }}
+                </div>
+            {% endif %}
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="{{ form.blankets.id_for_label }}">
+                {{ form.blankets.label }}
+            </label>
+
+            {{ form.blankets }}
+
+            {% if form.blankets.errors %}
+                <div class="field-error">
+                    {{ form.blankets.errors }}
+                </div>
+            {% endif %}
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <a
+                href="{% url 'resources' %}"
+                class="btn btn-secondary"
+            >
+                Cancel
+            </a>
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                Save Changes
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

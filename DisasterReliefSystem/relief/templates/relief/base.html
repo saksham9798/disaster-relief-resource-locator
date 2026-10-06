@@ -1,0 +1,102 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Disaster Relief System{% endblock %}</title>
+
+    <link rel="stylesheet"
+          href="{% static 'css/style.css' %}">
+
+    {% block extra_css %}
+    {% endblock %}
+
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav class="navbar">
+
+        <div class="navbar-container">
+
+            <a href="/" class="brand">
+                Disaster Relief System
+            </a>
+
+            <div class="nav-links">
+
+                <a href="/" class="nav-link">
+                    Dashboard
+                </a>
+
+                <a href="/areas/" class="nav-link">
+                    Areas
+                </a>
+
+                <a href="/resources/" class="nav-link">
+                    Resources
+                </a>
+
+                <a href="/requests/" class="nav-link">
+                    Requests
+                </a>
+
+                <a href="/allocation/" class="nav-link">
+                    Allocation
+                </a>
+
+                <a href="/analytics/" class="nav-link">
+                    Analytics
+                </a>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main-container">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="footer">
+
+        <div class="footer-content">
+
+            <h3>
+                Disaster Relief Resource Allocation System
+            </h3>
+
+            <p>
+                C++ Algorithm Core + Django Web Interface
+            </p>
+
+            <p>
+                Priority-based disaster resource management system
+            </p>
+
+        </div>
+
+    </footer>
+
+</body>
+
+</html>

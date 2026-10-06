@@ -1,0 +1,357 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Disaster Relief System</title>
+
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- ================= HEADER ================= -->
+
+    <div class="dashboard-header">
+
+        <h1>Disaster Relief Resource Allocation System</h1>
+
+        <p>
+            Monitor disaster areas, relief requests, resources
+            and priority-based allocation.
+        </p>
+
+        <!-- Navigation -->
+
+        <div class="dashboard-nav">
+
+            <a href="/">Dashboard</a>
+
+            <a href="/areas/">
+                Disaster Areas
+            </a>
+
+            <a href="/resources/">
+                Resources
+            </a>
+
+            <a href="/requests/">
+                Relief Requests
+            </a>
+
+            <a href="/allocation/">
+                Resource Allocation
+            </a>
+
+            <a href="/analytics/">
+                Analytics
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= STATISTICS ================= -->
+
+    <div class="stats-grid">
+
+        <!-- Total Areas -->
+
+        <div class="stat-card">
+
+            <h3>Total Disaster Areas</h3>
+
+            <div class="number">
+                {{ total_areas }}
+            </div>
+
+            <p>Affected areas registered</p>
+
+        </div>
+
+
+        <!-- Total Requests -->
+
+        <div class="stat-card">
+
+            <h3>Total Relief Requests</h3>
+
+            <div class="number">
+                {{ total_requests }}
+            </div>
+
+            <p>Resource requests</p>
+
+        </div>
+
+
+        <!-- Total Allocations -->
+
+        <div class="stat-card">
+
+            <h3>Total Allocations</h3>
+
+            <div class="number">
+                {{ total_allocations }}
+            </div>
+
+            <p>Allocation records</p>
+
+        </div>
+
+
+        <!-- Critical Areas -->
+
+        <div class="stat-card critical-stat">
+
+            <h3>Critical Areas</h3>
+
+            <div class="number">
+                {{ critical_areas }}
+            </div>
+
+            <p>Immediate attention required</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= PRIORITY OVERVIEW ================= -->
+
+    <div class="dashboard-section">
+
+        <div class="section-title">
+
+            <h2>Priority Overview</h2>
+
+            <p>
+                Disaster areas classified according to their priority score.
+            </p>
+
+        </div>
+
+
+        <div class="priority-grid">
+
+            <!-- Critical -->
+
+            <div class="priority-card critical">
+
+                <div class="priority-icon">
+                    !
+                </div>
+
+                <div>
+
+                    <h3>Critical</h3>
+
+                    <div class="priority-number">
+                        {{ critical_areas }}
+                    </div>
+
+                    <p>
+                        Immediate attention required
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- High -->
+
+            <div class="priority-card high">
+
+                <div class="priority-icon">
+                    ↑
+                </div>
+
+                <div>
+
+                    <h3>High Priority</h3>
+
+                    <div class="priority-number">
+                        {{ high_priority_areas }}
+                    </div>
+
+                    <p>
+                        High priority areas
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= SYSTEM MODULES ================= -->
+
+    <div class="dashboard-section">
+
+        <div class="section-title">
+
+            <h2>System Modules</h2>
+
+            <p>
+                Access different modules of the disaster relief system.
+            </p>
+
+        </div>
+
+
+        <div class="module-grid">
+
+
+            <!-- Disaster Areas -->
+
+            <a href="/areas/" class="module-card">
+
+                <div class="module-icon">
+                    📍
+                </div>
+
+                <h3>
+                    Disaster Areas
+                </h3>
+
+                <p>
+                    View affected areas, population,
+                    severity and priority scores.
+                </p>
+
+                <span class="module-link">
+                    View Areas →
+                </span>
+
+            </a>
+
+
+            <!-- Resources -->
+
+            <a href="/resources/" class="module-card">
+
+                <div class="module-icon">
+                    📦
+                </div>
+
+                <h3>
+                    Resources
+                </h3>
+
+                <p>
+                    View available food, water,
+                    medicine and blankets.
+                </p>
+
+                <span class="module-link">
+                    View Resources →
+                </span>
+
+            </a>
+
+
+            <!-- Relief Requests -->
+
+            <a href="/requests/" class="module-card">
+
+                <div class="module-icon">
+                    📋
+                </div>
+
+                <h3>
+                    Relief Requests
+                </h3>
+
+                <p>
+                    View resource requirements
+                    submitted by affected areas.
+                </p>
+
+                <span class="module-link">
+                    View Requests →
+                </span>
+
+            </a>
+
+
+            <!-- Allocation -->
+
+            <a href="/allocation/" class="module-card">
+
+                <div class="module-icon">
+                    🚚
+                </div>
+
+                <h3>
+                    Resource Allocation
+                </h3>
+
+                <p>
+                    View resources allocated
+                    according to priority.
+                </p>
+
+                <span class="module-link">
+                    View Allocation →
+                </span>
+
+            </a>
+
+
+            <!-- Analytics -->
+
+            <a href="/analytics/" class="module-card">
+
+                <div class="module-icon">
+                    📊
+                </div>
+
+                <h3>
+                    Analytics
+                </h3>
+
+                <p>
+                    View disaster statistics,
+                    priorities and system analysis.
+                </p>
+
+                <span class="module-link">
+                    View Analytics →
+                </span>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <div class="dashboard-footer">
+
+        <p>
+            Disaster Relief Resource Allocation System
+        </p>
+
+        <p>
+            C++ Algorithm Core + Django Web Interface
+        </p>
+
+    </div>
+
+</div>
+
+</body>
+</html>

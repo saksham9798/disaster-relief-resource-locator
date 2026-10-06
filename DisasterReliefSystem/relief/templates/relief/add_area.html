@@ -1,0 +1,221 @@
+{% extends "relief/base.html" %}
+
+{% block title %}
+Add Disaster Area | Disaster Relief System
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <span class="section-label">
+            DISASTER MANAGEMENT
+        </span>
+
+        <h1>
+            Add Disaster Area
+        </h1>
+
+        <p>
+            Enter information about a disaster-affected area.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="form-card">
+
+    <div class="form-card-header">
+
+        <h2>
+            Disaster Area Information
+        </h2>
+
+        <p>
+            These values will be used later for priority calculation.
+        </p>
+
+    </div>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        {% if form.non_field_errors %}
+
+        <div class="form-error">
+
+            {{ form.non_field_errors }}
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- Area Name -->
+
+        <div class="form-group">
+
+            <label for="{{ form.areaName.id_for_label }}">
+                {{ form.areaName.label }}
+            </label>
+
+            {{ form.areaName }}
+
+            {% if form.areaName.errors %}
+
+            <div class="field-error">
+                {{ form.areaName.errors }}
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- Severity -->
+
+        <div class="form-group">
+
+            <label for="{{ form.severity.id_for_label }}">
+                {{ form.severity.label }}
+            </label>
+
+            {{ form.severity }}
+
+            <small>
+                Enter a value between 1 and 10.
+            </small>
+
+            {% if form.severity.errors %}
+
+            <div class="field-error">
+                {{ form.severity.errors }}
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- Population -->
+
+        <div class="form-group">
+
+            <label for="{{ form.populationAffected.id_for_label }}">
+                {{ form.populationAffected.label }}
+            </label>
+
+            {{ form.populationAffected }}
+
+            {% if form.populationAffected.errors %}
+
+            <div class="field-error">
+                {{ form.populationAffected.errors }}
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- Medical Need -->
+
+        <div class="form-group">
+
+            <label for="{{ form.medicalNeed.id_for_label }}">
+                {{ form.medicalNeed.label }}
+            </label>
+
+            {{ form.medicalNeed }}
+
+            <small>
+                Enter a value between 1 and 10.
+            </small>
+
+            {% if form.medicalNeed.errors %}
+
+            <div class="field-error">
+                {{ form.medicalNeed.errors }}
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- Waiting Time -->
+
+        <div class="form-group">
+
+            <label for="{{ form.waitingTime.id_for_label }}">
+                {{ form.waitingTime.label }}
+            </label>
+
+            {{ form.waitingTime }}
+
+            {% if form.waitingTime.errors %}
+
+            <div class="field-error">
+                {{ form.waitingTime.errors }}
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- Resource Demand -->
+
+        <div class="form-group">
+
+            <label for="{{ form.resourceDemand.id_for_label }}">
+                {{ form.resourceDemand.label }}
+            </label>
+
+            {{ form.resourceDemand }}
+
+            {% if form.resourceDemand.errors %}
+
+            <div class="field-error">
+                {{ form.resourceDemand.errors }}
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- Buttons -->
+
+        <div class="form-actions">
+
+            <a href="{% url 'areas' %}"
+               class="btn btn-secondary">
+
+                Cancel
+
+            </a>
+
+
+            <button type="submit"
+                    class="btn btn-primary">
+
+                Save Disaster Area
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

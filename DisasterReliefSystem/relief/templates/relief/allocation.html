@@ -1,0 +1,312 @@
+{% extends "relief/base.html" %}
+
+{% block title %}
+Resource Allocation | Disaster Relief System
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <span class="section-label">
+            RESOURCE DISTRIBUTION
+        </span>
+
+        <h1>
+            Resource Allocation
+        </h1>
+
+        <p>
+            Resources allocated to disaster areas according
+            to priority.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="table-card">
+
+    <div class="table-header">
+
+        <div>
+
+            <h2>
+                Allocation Report
+            </h2>
+
+            <p>
+                Compare requested, allocated and unmet resources.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    {% if allocations %}
+
+    <div class="table-wrapper">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        #
+                    </th>
+
+                    <th>
+                        Area
+                    </th>
+
+                    <th>
+                        Priority Score
+                    </th>
+
+                    <th>
+                        Priority
+                    </th>
+
+                    <th>
+                        Food
+                    </th>
+
+                    <th>
+                        Water
+                    </th>
+
+                    <th>
+                        Medicine
+                    </th>
+
+                    <th>
+                        Blankets
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for allocation in allocations %}
+
+                <tr>
+
+                    <td>
+                        {{ forloop.counter }}
+                    </td>
+
+
+                    <td class="bold-text">
+                        {{ allocation.area.areaName }}
+                    </td>
+
+
+                    <td class="score">
+                        {{ allocation.priorityScore|floatformat:2 }}
+                    </td>
+
+
+                    <td>
+
+                        {% if allocation.priorityLevel == "Critical" %}
+
+                        <span class="badge badge-critical">
+                            Critical
+                        </span>
+
+                        {% elif allocation.priorityLevel == "High" %}
+
+                        <span class="badge badge-high">
+                            High
+                        </span>
+
+                        {% elif allocation.priorityLevel == "Medium" %}
+
+                        <span class="badge badge-medium">
+                            Medium
+                        </span>
+
+                        {% elif allocation.priorityLevel == "Low" %}
+
+                        <span class="badge badge-low">
+                            Low
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge badge-default">
+                            {{ allocation.priorityLevel }}
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- Food -->
+
+                    <td>
+
+                        <div class="allocation-cell">
+
+                            <span>
+                                {{ allocation.foodAllocated }}
+                                /
+                                {{ allocation.foodDemand }}
+                            </span>
+
+                            {% if allocation.foodUnmet > 0 %}
+
+                            <small class="unmet">
+                                Unmet: {{ allocation.foodUnmet }}
+                            </small>
+
+                            {% else %}
+
+                            <small class="fulfilled">
+                                Fully allocated
+                            </small>
+
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- Water -->
+
+                    <td>
+
+                        <div class="allocation-cell">
+
+                            <span>
+                                {{ allocation.waterAllocated }}
+                                /
+                                {{ allocation.waterDemand }}
+                            </span>
+
+                            {% if allocation.waterUnmet > 0 %}
+
+                            <small class="unmet">
+                                Unmet: {{ allocation.waterUnmet }}
+                            </small>
+
+                            {% else %}
+
+                            <small class="fulfilled">
+                                Fully allocated
+                            </small>
+
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- Medicine -->
+
+                    <td>
+
+                        <div class="allocation-cell">
+
+                            <span>
+                                {{ allocation.medicineAllocated }}
+                                /
+                                {{ allocation.medicineDemand }}
+                            </span>
+
+                            {% if allocation.medicineUnmet > 0 %}
+
+                            <small class="unmet">
+                                Unmet: {{ allocation.medicineUnmet }}
+                            </small>
+
+                            {% else %}
+
+                            <small class="fulfilled">
+                                Fully allocated
+                            </small>
+
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- Blankets -->
+
+                    <td>
+
+                        <div class="allocation-cell">
+
+                            <span>
+                                {{ allocation.blanketAllocated }}
+                                /
+                                {{ allocation.blanketDemand }}
+                            </span>
+
+                            {% if allocation.blanketUnmet > 0 %}
+
+                            <small class="unmet">
+                                Unmet: {{ allocation.blanketUnmet }}
+                            </small>
+
+                            {% else %}
+
+                            <small class="fulfilled">
+                                Fully allocated
+                            </small>
+
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+
+        <div class="empty-icon">
+            🚚
+        </div>
+
+        <h3>
+            No Allocation Records
+        </h3>
+
+        <p>
+            Resource allocation records will appear here
+            after allocation processing.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

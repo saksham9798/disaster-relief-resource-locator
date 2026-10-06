@@ -1,0 +1,417 @@
+{% extends "relief/base.html" %}
+
+{% block title %}
+Disaster Areas | Disaster Relief System
+{% endblock %}
+
+
+{% block content %}
+
+<!-- =====================================================
+     PAGE HEADER
+     ===================================================== -->
+
+<div class="page-header page-header-flex">
+
+    <div>
+
+        <span class="section-label">
+            DISASTER MANAGEMENT
+        </span>
+
+        <h1>
+            Disaster Areas
+        </h1>
+
+        <p>
+            View affected areas and their calculated
+            priority information.
+        </p>
+
+    </div>
+
+
+    <!-- Add Area Button -->
+
+    <div>
+
+        <a
+            href="{% url 'add_area' %}"
+            class="btn btn-primary"
+        >
+            + Add Disaster Area
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     AFFECTED AREAS TABLE
+     ===================================================== -->
+
+<div class="table-card">
+
+
+    <!-- Table Header -->
+
+    <div class="table-header">
+
+        <div>
+
+            <h2>
+                Affected Areas
+            </h2>
+
+            <p>
+                Areas are displayed according to priority score.
+                Higher-priority areas should be processed first.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         CHECK WHETHER AREAS EXIST
+         ================================================= -->
+
+    {% if areas %}
+
+
+    <div class="table-wrapper">
+
+        <table class="data-table">
+
+
+            <!-- ================= TABLE HEAD ================= -->
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        #
+                    </th>
+
+                    <th>
+                        Area Name
+                    </th>
+
+                    <th>
+                        Severity
+                    </th>
+
+                    <th>
+                        Population Affected
+                    </th>
+
+                    <th>
+                        Medical Need
+                    </th>
+
+                    <th>
+                        Waiting Time
+                    </th>
+
+                    <th>
+                        Resource Demand
+                    </th>
+
+                    <th>
+                        Priority Score
+                    </th>
+
+                    <th>
+                        Priority Level
+                    </th>
+
+                    <th>
+                        Actions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <!-- ================= TABLE BODY ================= -->
+
+            <tbody>
+
+                {% for area in areas %}
+
+                <tr>
+
+
+                    <!-- Serial Number -->
+
+                    <td>
+                        {{ forloop.counter }}
+                    </td>
+
+
+                    <!-- Area Name -->
+
+                    <td class="bold-text">
+                        {{ area.areaName }}
+                    </td>
+
+
+                    <!-- Severity -->
+
+                    <td>
+                        {{ area.severity }}
+                    </td>
+
+
+                    <!-- Population -->
+
+                    <td>
+                        {{ area.populationAffected }}
+                    </td>
+
+
+                    <!-- Medical Need -->
+
+                    <td>
+                        {{ area.medicalNeed }}
+                    </td>
+
+
+                    <!-- Waiting Time -->
+
+                    <td>
+                        {{ area.waitingTime }}
+                    </td>
+
+
+                    <!-- Resource Demand -->
+
+                    <td>
+                        {{ area.resourceDemand }}
+                    </td>
+
+
+                    <!-- Priority Score -->
+
+                    <td class="score">
+
+                        {{ area.priorityScore|floatformat:2 }}
+
+                    </td>
+
+
+                    <!-- Priority Level -->
+
+                    <td>
+
+                        {% if area.priorityLevel == "Critical" %}
+
+                            <span class="badge badge-critical">
+                                Critical
+                            </span>
+
+                        {% elif area.priorityLevel == "High" %}
+
+                            <span class="badge badge-high">
+                                High
+                            </span>
+
+                        {% elif area.priorityLevel == "Medium" %}
+
+                            <span class="badge badge-medium">
+                                Medium
+                            </span>
+
+                        {% elif area.priorityLevel == "Low" %}
+
+                            <span class="badge badge-low">
+                                Low
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge badge-default">
+                                {{ area.priorityLevel }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- Actions -->
+
+                    <td>
+
+                        <div class="area-actions">
+
+
+                            <!-- Edit Area -->
+
+                            <a
+                                href="{% url 'edit_area' area.id %}"
+                                class="btn btn-edit btn-small"
+                            >
+                                ✏ Edit
+                            </a>
+
+
+                            <!-- Delete Area -->
+
+                            <form
+                                method="POST"
+                                action="{% url 'delete_area' area.id %}"
+                                onsubmit="return confirm('Are you sure you want to delete this disaster area?');"
+                                style="display: inline;"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-delete btn-small"
+                                >
+                                    🗑 Delete
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    {% else %}
+
+
+    <!-- =================================================
+         NO AREAS
+         ================================================= -->
+
+    <div class="empty-state">
+
+        <div class="empty-icon">
+            📍
+        </div>
+
+        <h3>
+            No Disaster Areas Found
+        </h3>
+
+        <p>
+            No disaster area records are currently available.
+        </p>
+
+        <br>
+
+        <a
+            href="{% url 'add_area' %}"
+            class="btn btn-primary"
+        >
+            + Add Your First Disaster Area
+        </a>
+
+    </div>
+
+
+    {% endif %}
+
+
+</div>
+
+
+<!-- =====================================================
+     PRIORITY INFORMATION
+     ===================================================== -->
+
+<div class="info-card">
+
+    <h2>
+        Priority Calculation
+    </h2>
+
+    <p>
+        Each disaster area receives a priority score based on
+        severity, affected population, medical need, waiting time,
+        and resource demand. Areas with higher priority scores
+        should receive relief resources first.
+    </p>
+
+</div>
+
+
+<!-- =====================================================
+     PRIORITY LEGEND
+     ===================================================== -->
+
+<div class="priority-legend">
+
+    <div class="legend-item">
+
+        <span class="badge badge-critical">
+            Critical
+        </span>
+
+        <span>
+            Score 80 and above
+        </span>
+
+    </div>
+
+
+    <div class="legend-item">
+
+        <span class="badge badge-high">
+            High
+        </span>
+
+        <span>
+            Score 60 – 79.99
+        </span>
+
+    </div>
+
+
+    <div class="legend-item">
+
+        <span class="badge badge-medium">
+            Medium
+        </span>
+
+        <span>
+            Score 40 – 59.99
+        </span>
+
+    </div>
+
+
+    <div class="legend-item">
+
+        <span class="badge badge-low">
+            Low
+        </span>
+
+        <span>
+            Score below 40
+        </span>
+
+    </div>
+
+</div>
+
+
+{% endblock %}
